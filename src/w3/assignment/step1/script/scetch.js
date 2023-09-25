@@ -32,6 +32,12 @@ function draw() {
   mm = p5.Vector.sub(mv, cc);
   stroke(0);
   line(0, 0, mm.x, mm.y);
+
+  stroke('salmon');
+  line(0, 0, 100 * acc.x, 100 * acc.y);
+
+  stroke('red');
+  line(0, 0, 10 * vel.x, 10 * vel.y);
 }
 
 function reset() {
