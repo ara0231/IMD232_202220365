@@ -1,54 +1,45 @@
-//
-
-let pos;
-let vel;
-let acc;
-
-let cc;
-
-let a;
-let b;
-let c;
+let moverA;
+let gravity;
+let wind;
+let pmouseX;
+let pmouseY;
 
 function setup() {
   setCanvasContainer('canvas', 1, 1, true);
-  background('white');
-
-  cc = createVector(width / 2, height / 2);
-
-  pos = createVector(width / 2, height / 2);
-  vel = createVector();
-  acc = createVector();
+  background(255);
+  moverA = new Mover(width / 2, height / 2, 10);
+  gravity = createVector(0, 0.2);
+  wind = createVector(0.0, 0);
 }
 
 function draw() {
-  background('white');
-  update();
-  display();
+  background(255);
 
-  cc.set(constrain(mouseX, 0, width), constrain(mouseY, 0, height));
+  if (mouseIsPressed && isMouseInsideCanvas()) {
+    moverA.pos = createVector(mouseX, mouseY);
+    moverA.setMouseHeld(true);
+  } else {
+    moverA.setMouseHeld(false);
+  }
 
-  stroke(0);
-  line(pos.x, pos.y, mouseX, mouseY);
+  moverA.applyGravity(gravity);
+
+  if (moverA.isMouseHeld && (mouseX !== pmouseX || mouseY !== pmouseY)) {
+    moverA.applyForce(wind);
+  }
+
+  moverA.update();
+  moverA.checkEdges();
+  moverA.display();
+  moverA.displayVectors();
+
+  pmouseX = mouseX;
+  pmouseY = mouseY;
 }
 
-function update() {
-  a = createVector(mouseX, mouseY);
-  b = p5.Vector.sub(a, pos);
-
-  b.setMag(2);
-
-  let c = p5.Vector.sub(b, vel);
-
-  c.limit(0.1);
-  acc.add(c);
-  vel.add(acc);
-  pos.add(vel);
-  acc.mult(0);
-}
-
-function display() {
-  noStroke();
-  fill(0);
-  ellipse(pos.x, pos.y, 50);
+if (moverA.isMouseHeld) {
+  moverA.applyGravity(gravity);
+  if (mouseX !== pmouseX || mouseY !== pmouseY) {
+    moverA.applyForce(wind);
+  }
 }
