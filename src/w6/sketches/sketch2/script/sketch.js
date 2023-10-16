@@ -1,50 +1,28 @@
-let ball;
-let ball2;
-
-let gravity;
-let wind;
-
-let att;
+let emitter;
+let particle;
+let g;
 
 function setup() {
-  setCanvasContainer('canvas', 3, 2, true);
-  ball = new Mover(width / 3, 0, 50);
-  ball2 = new Mover((2 * width) / 3, 0, 10);
+  setCanvasContainer('canvas', 1, 2, true);
+  colorMode(HSL, 360, 100, 100);
+  particle = new ball(width / 2, 0, 0, 0, 1, 0, 100, 50);
 
-  gravity = createVector(0, 0.1);
-  wind = createVector(-1, 0);
+  emitter = new Emitter(width / 2, heigth);
 
-  att = new Attractor(width / 2, height / 2, 100);
+  g = createVector(0, 0.1);
+
+  background('white');
 }
 
 function draw() {
-  // let g = p5.Vector.mult(gravity, ball.mass);
-  // ball.applyForce(g);
+  background('white');
+  const scaledG = p5.Vector.mult(g, particle.mass);
+  particle.applyforce(scaledG);
+  particle.update();
+  particle.display();
 
-  // let g2 = p5.Vector.mult(gravity, ball2.mass);
-  // ball2.applyForce(g2);
-
-  // if (mouseIsPressed) {
-  //   ball.applyForce(wind);
-  //   ball2.applyForce(wind);
-  // }
-
-  // let force1 = att.Attractor(ball);
-  ball.appplyForce(att.attract(ball));
-  // let force2 = att.Attractor(ball2);
-  ball2.appplyForce(att.attract(ball2));
-
-  ball.update();
-  ball2.update();
-
-  // ball.edgeBounce();
-  // ball2.edgeBounce();
-
-  background('salmon');
-  fill('White');
-
-  ball.display();
-  ball2.display();
-
-  att.display();
+  emitter.createBall();
+  emitter.applyGravity(g);
+  emitter.update();
+  emitter.display();
 }
