@@ -5,6 +5,7 @@ class Traffic {
 
   run() {
     this.vehicles.forEach((eachVehicle) => {
+      let sepForce = eachVehicle.separate(this.vehicles);
       // eachVehicle.saparate(this.vehicles)
       eachVehicle.update();
       eachVehicle.display();
