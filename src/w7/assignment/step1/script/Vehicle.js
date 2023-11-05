@@ -6,14 +6,14 @@ class Vehicle {
     this.mass = mass; // Vehicle의 질량값
     this.rad = rad; //Vehicle의 반지름값
     this.speedMx = speedMx; //Vehicle의 속도 최대값
-    this.forceMx = forceMx; //Vehicle 최대 값
+    this.forceMx = forceMx; //Vehicle 힘의 최대 값
     this.neighborhooodRad = 50; //Vehicle의 행동의 이웃의 반경의 반지름값
     this.color = color; //색상값에 변수 color 값을 넣음
   } // constructor에 각 값을 순서대로 입력하여 넣어 초기화
 
   cohesion(others) {
-    let cnt = 0;
-    const steer = createVector(0, 0);
+    let cnt = 0; //함수 cnt를 선언하고 값을 0으로함.
+    const steer = createVector(0, 0); //함수 steer을 선언하고 벡터값을 넣어줌
     others.forEach((each) => {
       if (each !== this) {
         const distSq =
@@ -22,15 +22,15 @@ class Vehicle {
           steer.add(each.pos);
           cnt++;
         }
-      }
-    });
+      } //만약 각의 값이
+    }); //주체말고 다른것들의 각을 설정함.
     if (cnt > 0) {
-      steer.div(cnt);
-      steer.sub(this.pos);
-      steer.setMag(this.speedMx);
-      steer.sub(this.vel);
-      steer.limit(this.forceMx);
-    }
+      steer.div(cnt); //steer의 값을 cnt로 나눔
+      steer.sub(this.pos); //steer값을 위치값을 더함
+      steer.setMag(this.speedMx); //steer에 최대 속도값을 앞서 설정한 speedMx 값으로 정함
+      steer.sub(this.vel); //steer값에 속도값을 더함
+      steer.limit(this.forceMx); //steer에 힘의 최대값의 한계점을 걸어둔다.
+    } //만약 cnt의 값이 0보다 클 때
     return steer;
   } //다른것의 위치를 평균으로 이동한다.
 
