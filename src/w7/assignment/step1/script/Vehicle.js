@@ -2,7 +2,7 @@ class Vehicle {
   constructor(x, y, mass, rad, speedMx, forceMx, color) {
     this.pos = createVector(x, y); // 위치값을 벡터값에따라 넣음
     this.vel = p5.Vector.random2D(); // 속도값에 랜덤한 값을 넣음
-    this.acc = createVector(); //
+    this.acc = createVector(); //가속도에 벡터값을 넣음.
     this.mass = mass; // Vehicle의 질량값
     this.rad = rad; //Vehicle의 반지름값
     this.speedMx = speedMx; //Vehicle의 속도 최대값
@@ -35,31 +35,32 @@ class Vehicle {
   } //다른것의 위치를 평균으로 이동한다.
 
   align(others) {
-    let cnt = 0;
-    const steer = createVector(0, 0);
+    let cnt = 0; //변수 cnt를 선언하고 0의 값을 넣어줌
+    const steer = createVector(0, 0); // 변수 steer을 선언하고 벡터값 0,0을 넣어줌
     others.forEach((each) => {
       if (each !== this) {
+        //만약 자신을 제외한 다른요소를 실행
         const distSq =
-          (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2;
+          (this.pos.x - each.pos.x) ** 2 + (this.pos.y - each.pos.y) ** 2; //제곱
         if (distSq < this.neighborhooodRad ** 2) {
           steer.add(each.vel);
           //   steer.add(p5.Vector.normalize(each.vel));
-          cnt++;
+          cnt++; //cnt값에 순차적으로 값을 더함
         }
       }
-    });
+    }); //다른것들의 각의 값이
     if (cnt > 0) {
       steer.div(cnt);
       steer.setMag(this.speedMx);
       steer.sub(this.vel);
       steer.limit(this.forceMx);
-    }
+    } //만약 cnt의 값이 0보다 클 때는 steer의 값으로 초기화한다.
     return steer;
   }
 
   separate(others) {
-    let cnt = 0;
-    const steer = createVector(0, 0);
+    let cnt = 0; //변수 cnt를 선언하고 0의 값을 넣어준다.
+    const steer = createVector(0, 0); // 변수 steer을 선언하고 벡터값 0,0을 넣어줌
     others.forEach((each) => {
       if (each !== this) {
         const dist = this.pos.dist(each.pos);
@@ -79,11 +80,11 @@ class Vehicle {
       steer.limit(this.forceMx);
     }
     return steer;
-  }
+  } //만약 cnt의 값이 0보다 클 때는 steer의 값으 초기화한다.
 
   applyForce(force) {
     const forceDivedByMass = p5.Vector.div(force, this.mass);
-    this.acc.add(forceDivedByMass);
+    this.acc.add(forceDivedByMass); //
   } //힘을 넣어 작용하게 함
 
   update() {
@@ -104,7 +105,7 @@ class Vehicle {
     } else if (this.pos.y > height + infiniteOffset) {
       this.pos.y = -infiniteOffset;
     }
-  } //화면 밖으로 나간 것들의 위치를 이동시킴.
+  } //만약 화면 밖으로 나간 것들의 위치를 이동시킴.
 
   display() {
     push();
@@ -113,10 +114,10 @@ class Vehicle {
     noStroke(); // 윤관선 제거
     fill(this.color); // 채워지는 색을 위에서 설정한 값으로 설정되게 함.
     beginShape(); //그려지는것을 시작함.
-    vertex(this.rad, 0);
-    vertex(this.rad * cos(radians(-135)), this.rad * sin(radians(-135)));
-    vertex(0, 0);
-    vertex(this.rad * cos(radians(135)), this.rad * sin(radians(135)));
+    vertex(this.rad, 0); //다각형의 꼭짓점을 반지름과 0의 좌표에 설정
+    vertex(this.rad * cos(radians(-135)), this.rad * sin(radians(-135))); //꼭짓점을 -135의 코사인에반지금값을 곱하고, -135의 사인에반지름값을 곱한값에 설정
+    vertex(0, 0); //꼭짓점을 0,0의 좌표에 설정.
+    vertex(this.rad * cos(radians(135)), this.rad * sin(radians(135))); //꼭짓점을 135의 코사인에반지금값을 곱하고, 135의 사인에반지름값을 곱한값에 설정
     endShape(CLOSE); //그려지는것을 종료함.
     // noFill();
     // stroke(0, 0, 60);

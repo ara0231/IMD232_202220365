@@ -8,7 +8,7 @@ function setup() {
   traffic = new Traffic(); //변수 traffic안에 새로운 class Traffic을 넣음
   for (let n = 0; n < 10; n++) {
     traffic.addVehicle(random(width), random(height));
-  } //변수 traffic에 Vehicle의 높이 너비의 랜덤한 값을 더함
+  } //변수 n의 값이 0이거나 10보다 작을때 변수 traffic에 Vehicle의 높이 너비의 랜덤한 값을 더함
 } //함수 setup을 선언
 
 function draw() {
