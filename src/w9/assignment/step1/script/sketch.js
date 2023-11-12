@@ -101,7 +101,7 @@ Composite.add(
   })
 );
 
-group = Body.nextGroup(true);
+// group = Body.nextGroup(true);
 
 var ropeC = Composites.stack(600, 80, 13, 1, 10, 10, function (x, y) {
   return Bodies.rectangle(x - 10, y, 30, 50, {
@@ -113,7 +113,7 @@ var ropeC = Composites.stack(600, 80, 13, 1, 10, 10, function (x, y) {
   });
 });
 
-Composites.chain(ropeC, 0.5, 0, -0.5, 0, { stiffness: 1, length: 0 });
+Composites.chain(ropeC, 0.5, 0, -0.5, 0, { stiffness: 0, length: 0 });
 Composite.add(
   ropeC,
   Constraint.create({
