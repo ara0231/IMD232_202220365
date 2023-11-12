@@ -15,6 +15,8 @@ var engine = Engine.create(),
 
 let elemT = document.querySelector('#canvas');
 
+const MatterShape = [];
+
 // create renderer
 var render = Render.create({
   element: elemT,
@@ -36,11 +38,21 @@ var runner = Runner.create();
 Runner.run(runner, engine);
 
 // add bodies
-var group = Body.nextGroup(true);
+// var group = Body.nextGroup(true);
 
-var ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
-  return Bodies.polygon(x, y, 8, 20, {
-    collisionFilter: { group: group },
+const vertices = [
+  { x: 5.5 * 2, y: -4.8 * 2 },
+  { x: 7.6 * 2, y: -1.6 * 2 },
+  { x: 6.5 * 2, y: 1.8 * 2 },
+  { x: 2.7 * 2, y: 4.5 * 2 },
+  { x: -1.2 * 2, y: 4.2 * 2 },
+  { x: -3.6 * 2, y: 1.9 * 2 },
+  { x: -1.3 * 2, y: -2.8 * 2 },
+];
+
+var ropeA = Composites.stack(100, 80, 10, 1, 0, 0, function (x, y) {
+  return Bodies.polygon(x, y, 8, 21, {
+    // collisionFilter: { group: group },
     render: {
       fillStyle: 'Lightpink',
     },
@@ -48,75 +60,71 @@ var ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
 });
 
 Composites.chain(ropeA, 0.5, 0, -0.5, 0, {
-  stiffness: 0.8,
-  length: 3,
+  stiffness: 0,
+  length: 0,
   // render: { type: 'line' },
 });
+
 Composite.add(
   ropeA,
   Constraint.create({
     bodyB: ropeA.bodies[0],
-    pointB: { x: -25, y: 0 },
+    pointB: { x: -0, y: 0 },
     pointA: { x: ropeA.bodies[0].position.x, y: ropeA.bodies[0].position.y },
-    stiffness: 1,
+    // stiffness: 1,
   })
 );
 
-group = Body.nextGroup(true);
+// group = Body.nextGroup(true);
 
-var ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function (x, y) {
+var ropeB = Composites.stack(335, 80, 10, 1, 10, 70, function (x, y) {
   return Bodies.circle(x, y, 20, {
-    collisionFilter: { group: group },
+    // collisionFilter: { group: group },
     render: {
-      fillStyle: 'Lightskyblue', // 파란색
+      fillStyle: 'Lightskyblue',
     },
   });
 });
 
 Composites.chain(ropeB, 0.5, 0, -0.5, 0, {
-  stiffness: 0.8,
-  length: 2,
+  stiffness: 0,
+  length: 0,
   // render: { type: 'line' },
 });
 Composite.add(
   ropeB,
   Constraint.create({
     bodyB: ropeB.bodies[0],
-    pointB: { x: -20, y: 0 },
+    pointB: { x: 0, y: 0 },
     pointA: { x: ropeB.bodies[0].position.x, y: ropeB.bodies[0].position.y },
-    stiffness: 1,
+    stiffness: 0,
   })
 );
 
 group = Body.nextGroup(true);
 
-var ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
-  return Bodies.rectangle(x - 20, y, 50, 20, {
-    collisionFilter: { group: group },
+var ropeC = Composites.stack(600, 80, 13, 1, 10, 10, function (x, y) {
+  return Bodies.rectangle(x - 10, y, 30, 50, {
+    // collisionFilter: { group: group },
     chamfer: 5,
     render: {
-      fillStyle: 'aqua', // 파란색
+      fillStyle: 'aqua',
     },
   });
 });
 
-Composites.chain(ropeC, 0.3, 0, -0.3, 0, { stiffness: 1, length: 0 });
+Composites.chain(ropeC, 0.5, 0, -0.5, 0, { stiffness: 1, length: 0 });
 Composite.add(
   ropeC,
   Constraint.create({
     bodyB: ropeC.bodies[0],
-    pointB: { x: -20, y: 0 },
+    pointB: { x: -0, y: 0 },
     pointA: { x: ropeC.bodies[0].position.x, y: ropeC.bodies[0].position.y },
     stiffness: 1,
   })
 );
 
-Composite.add(world, [
-  ropeA,
-  ropeB,
-  ropeC,
-  Bodies.rectangle(400, 600, 1200, 50.5, { isStatic: true }),
-]);
+Composite.add(world, [ropeA, ropeB, ropeC]);
 
 // add mouse control
 var mouse = Mouse.create(render.canvas),
@@ -124,9 +132,9 @@ var mouse = Mouse.create(render.canvas),
     mouse: mouse,
     constraint: {
       stiffness: 0.2,
-      // render: {
-      //   visible: false,
-      // },
+      render: {
+        visible: false,
+      },
     },
   });
 
@@ -136,7 +144,7 @@ Composite.add(world, mouseConstraint);
 render.mouse = mouse;
 
 // fit the render viewport to the scene
-// Render.lookAt(render, {
-//   min: { x: 0, y: 0 },
-//   max: { x: 700, y: 600 },
-// });
+Render.lookAt(render, {
+  min: { x: 0, y: 0 },
+  max: { x: 700, y: 600 },
+});
