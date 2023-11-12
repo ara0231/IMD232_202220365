@@ -1,21 +1,142 @@
-let traffic; //변수 traffic 선언
-let infiniteOffset = 80; //변수 infiniteOffset 선언후 값을 80을 넣는다.
+var Engine = Matter.Engine,
+  Render = Matter.Render,
+  Runner = Matter.Runner,
+  Body = Matter.Body,
+  Composite = Matter.Composite,
+  Composites = Matter.Composites,
+  Constraint = Matter.Constraint,
+  MouseConstraint = Matter.MouseConstraint,
+  Mouse = Matter.Mouse,
+  Bodies = Matter.Bodies;
 
-function setup() {
-  setCanvasContainer('canvas', 3, 2, true); // setCanvasContainer 함수를 사용하여 id canvas를 부르고 캔버스의 비율을 3 :2로 한다.
-  colorMode(HSL, 360, 100, 100, 100); //색상모드를 HSL로 설정
-  background('white'); //배경색을 흰색으로 설정
-  traffic = new Traffic(); //변수 traffic안에 새로운 class Traffic을 넣음
-  for (let n = 0; n < 10; n++) {
-    traffic.addVehicle(random(width), random(height));
-  } //변수 n의 값이 0이거나 10보다 작을때 변수 traffic에 Vehicle의 높이 너비의 랜덤한 값을 더함
-} //함수 setup을 선언
+// create engine
+var engine = Engine.create(),
+  world = engine.world;
 
-function draw() {
-  background('white'); //배경색을 흰색으로 설정
-  traffic.run(); //함수 traffic을 실행
-} //함수 draw를 선언
+let elemT = document.querySelector('#canvas');
 
-function mouseDragged() {
-  traffic.addVehicle(mouseX, mouseY); //함수 traffic에 Vehicle을 더한 값을 마우스의 값을 따라 움직이게 함.
-} //함수 mouseDragged를 선언
+// create renderer
+var render = Render.create({
+  element: elemT,
+  engine: engine,
+  options: {
+    width: 800,
+    height: 600,
+    showAngleIndicator: true,
+    showCollisions: true,
+    showVelocity: true,
+    wireframes: false,
+  },
+});
+
+Render.run(render);
+
+// create runner
+var runner = Runner.create();
+Runner.run(runner, engine);
+
+// add bodies
+var group = Body.nextGroup(true);
+
+var ropeA = Composites.stack(100, 50, 8, 1, 10, 10, function (x, y) {
+  return Bodies.polygon(x, y, 8, 20, {
+    collisionFilter: { group: group },
+    render: {
+      fillStyle: 'Lightpink',
+    },
+  });
+});
+
+Composites.chain(ropeA, 0.5, 0, -0.5, 0, {
+  stiffness: 0.8,
+  length: 3,
+  // render: { type: 'line' },
+});
+Composite.add(
+  ropeA,
+  Constraint.create({
+    bodyB: ropeA.bodies[0],
+    pointB: { x: -25, y: 0 },
+    pointA: { x: ropeA.bodies[0].position.x, y: ropeA.bodies[0].position.y },
+    stiffness: 1,
+  })
+);
+
+group = Body.nextGroup(true);
+
+var ropeB = Composites.stack(350, 50, 10, 1, 10, 10, function (x, y) {
+  return Bodies.circle(x, y, 20, {
+    collisionFilter: { group: group },
+    render: {
+      fillStyle: 'Lightskyblue', // 파란색
+    },
+  });
+});
+
+Composites.chain(ropeB, 0.5, 0, -0.5, 0, {
+  stiffness: 0.8,
+  length: 2,
+  // render: { type: 'line' },
+});
+Composite.add(
+  ropeB,
+  Constraint.create({
+    bodyB: ropeB.bodies[0],
+    pointB: { x: -20, y: 0 },
+    pointA: { x: ropeB.bodies[0].position.x, y: ropeB.bodies[0].position.y },
+    stiffness: 1,
+  })
+);
+
+group = Body.nextGroup(true);
+
+var ropeC = Composites.stack(600, 50, 13, 1, 10, 10, function (x, y) {
+  return Bodies.rectangle(x - 20, y, 50, 20, {
+    collisionFilter: { group: group },
+    chamfer: 5,
+    render: {
+      fillStyle: 'aqua', // 파란색
+    },
+  });
+});
+
+Composites.chain(ropeC, 0.3, 0, -0.3, 0, { stiffness: 1, length: 0 });
+Composite.add(
+  ropeC,
+  Constraint.create({
+    bodyB: ropeC.bodies[0],
+    pointB: { x: -20, y: 0 },
+    pointA: { x: ropeC.bodies[0].position.x, y: ropeC.bodies[0].position.y },
+    stiffness: 1,
+  })
+);
+
+Composite.add(world, [
+  ropeA,
+  ropeB,
+  ropeC,
+  Bodies.rectangle(400, 600, 1200, 50.5, { isStatic: true }),
+]);
+
+// add mouse control
+var mouse = Mouse.create(render.canvas),
+  mouseConstraint = MouseConstraint.create(engine, {
+    mouse: mouse,
+    constraint: {
+      stiffness: 0.2,
+      // render: {
+      //   visible: false,
+      // },
+    },
+  });
+
+Composite.add(world, mouseConstraint);
+
+// keep the mouse in sync with rendering
+render.mouse = mouse;
+
+// fit the render viewport to the scene
+// Render.lookAt(render, {
+//   min: { x: 0, y: 0 },
+//   max: { x: 700, y: 600 },
+// });
