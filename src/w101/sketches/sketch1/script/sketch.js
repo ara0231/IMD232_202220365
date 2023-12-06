@@ -1,9 +1,9 @@
 let angle = 0;
-let w = 30; // width of the cube
-let ma; // angle for rotation
-let maxD; // maximum distance
-let camZ = 600; // initial camera Z position
-let zoomSpeed = 50; // adjust zoom speed
+let w = 30;
+let ma;
+let maxD;
+let camZ = 600;
+let zoomSpeed = 50;
 
 function setup() {
   let cnv = createCanvas(windowWidth, windowHeight, WEBGL);
@@ -15,19 +15,17 @@ function setup() {
 function draw() {
   background(0);
 
-  // Oscillating background gradient
   let from = color(128, 0, 255);
   let to = color(0, 128, 255);
   let lerpAmt = (sin(angle / 2) + 1) / 2;
   let bgColor = lerpColor(from, to, lerpAmt);
   ambientLight(bgColor);
 
-  perspective(); // Change to perspective projection
+  perspective();
 
   rotateX(-QUARTER_PI);
   rotateY(ma);
 
-  // Move to the center of the canvas
   translate(0, 0);
 
   for (let z = -300; z < 300; z += w) {
@@ -40,7 +38,6 @@ function draw() {
 
       translate(x, 0, z);
 
-      // Dynamic Sphere Color
       let col = color(
         map(sin(angle), -1, 1, 300, 255),
         map(cos(angle * 0.6), -1, 1, 100, 255),
@@ -50,7 +47,7 @@ function draw() {
 
       fill(col);
       stroke(255);
-      strokeWeight(1); // Adjust stroke thickness
+      strokeWeight(1);
       sphere(r);
 
       pop();
@@ -60,22 +57,17 @@ function draw() {
   angle += 0.05;
 }
 
-// Adjust canvas size and position when the window is resized
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 
-  // Center the canvas in the window
   canvas.position((windowWidth - width) / 2, (windowHeight - height) / 2);
 }
 
-// Change camera zoom on mouse click
 function mousePressed() {
   if (mouseY < height / 2) {
-    // If clicked above the center, zoom in
     camZ -= zoomSpeed;
   } else {
-    // If clicked below the center, zoom out
     camZ += zoomSpeed;
   }
-  camera(0, 0, camZ, 0, 0, 0, 0, 1, 0); // Set the camera position
+  camera(0, 0, camZ, 0, 0, 0, 0, 1, 0);
 }
